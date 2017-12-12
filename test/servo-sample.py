@@ -1,30 +1,35 @@
-# GPIOを制御するライブラリ
-import wiringpi
-# タイマーのライブラリ
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+ 
+import pigpio
 import time
-# 引数取得
-import sys
-
-# サーボモータに接続したGPIO端子番号を指定
-servo_pin  =  4
-# サーボモータを動かす角度を指定する
-# set_degree = 90 デフォルト
-# 引数指定
-param = sys.argv
-set_degree = int(param[1])
-print(set_degree)
-
-wiringpi.wiringPiSetupGpio()
-# ハードウェアPWMで出力する
-wiringpi.pinMode( servo_pin, 2 )
-# サーボモータに合わせたPWM波形の設定
-wiringpi.pwmSetMode(0)
-wiringpi.pwmSetRange(1024)
-wiringpi.pwmSetClock(375)
-
-# 指定した角度が動作範囲内の場合のみサーボモータを制御
-if ( set_degree <= 90 and set_degree >= -90 ):
-	# 角度から送り出すPWMのパルス幅を算出する
-	move_deg = int( 81 + 41 / 90 * set_degree )
-	# サーボモータにPWMを送り、サーボモータを動かす
-	wiringpi.pwmWrite( servo_pin, move_deg )
+ 
+SERVO_X = 4 # GPIO
+START_V = 500 # us
+END_V = 2400 # us
+ 
+def get_pulsewidth(ang):
+    ang += 90.0
+    if ang < 0.0:
+        ang = 0.0
+    if ang > 180.0:
+        ang = 180.0
+    w = (END_V - START_V) * (float(ang) / 180.0) + START_V
+    return w
+ 
+pi1 = pigpio.pi()
+ 
+try:
+    for ang in [0, -90, 0, 90, 0, -90, -45, 0, 45, 90, 45, 0]:
+        w = get_pulsewidth(ang)
+        print ("ang = %f , pulse width = %f" % (ang, w))
+        pi1.set_servo_pulsewidth(SERVO_X, w)
+        time.sleep(0.5)
+        pi1.set_servo_pulsewidth(SERVO_X, 0)
+        time.sleep(2.5)
+ 
+except KeyboardInterrupt:
+    pass
+ 
+print ("Done.")
+pi1.stop()
