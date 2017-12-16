@@ -10,15 +10,19 @@ Before running the code using pigpio module like "servo-sample.py", run the foll
 
 #### Julius
 make an original dictionary
+
 `$ vi recog.yomi`
 
 change the type of the dictionary   
+
 `$ iconv -f utf8 -t eucjp recog.yomi | yomi2voca.pl > ~/julius-kits/dictation-kit-v4.4/recog.dic`
 
 edit the setting file
+
 `$ vim ~/julius-kits/dictation-kit-v4.4/recog.jconf`
 
 start-up julius which reads the original dictionary
+
 `julius -C ~/julius-kits/dictation-kit-v4.4/recog.jconf`
 
 
