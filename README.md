@@ -23,7 +23,7 @@ edit the setting file
 
 start-up julius which reads the original dictionary
 
-`julius -C ~/julius-kits/dictation-kit-v4.4/recog.jconf`
+`$ julius -C ~/julius-kits/dictation-kit-v4.4/recog.jconf`
 
 
 
